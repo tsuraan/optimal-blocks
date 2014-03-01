@@ -15,8 +15,7 @@ speed = do
   defaultMain
     [ bgroup "BuzzHash"
       [ bgroup "h" $
-        [ bench "0" (nf h 0) ] ++ [
-          bench (show n) (nf h n) | n <- [7,15..255]]
+        [ bench (show n) (nf h n) | n <- 0:[7,15..255]]
       , bgroup "windows"
         [ bench (show n) $ nf (hashes n) bytes | n <- 64:[128, 256..2048]]
       ]

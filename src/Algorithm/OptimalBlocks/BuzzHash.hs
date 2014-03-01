@@ -5,11 +5,11 @@
  -}
 
 module Algorithm.OptimalBlocks.BuzzHash
-( init
-, roll
-, hashes
-, h
+( hashes
 , Hash(..)
+, init
+, roll
+, h
 ) where
 
 import qualified Data.ByteString as BS
@@ -23,6 +23,20 @@ import Data.Bits ( rotateL, xor )
 import Algorithm.OptimalBlocks.SipHash ( hashByteString )
 
 import Prelude hiding ( init, length, null, rem )
+
+hashes :: Int -> ByteString -> Vector Word64
+hashes len bs
+  | length bs < len = empty
+  | otherwise = constructN (length bs - len + 1) upd
+  where
+  upd :: Vector Word64 -> Word64
+  upd v
+    | null v    = currentVal $ init $ unsafeTake len bs
+    | otherwise =
+        let prevH = Hash len $ unsafeLast v
+            old8  = unsafeIndex bs (VU.length v - 1)
+            new8  = unsafeIndex bs (len + VU.length v - 1)
+        in currentVal $ roll prevH old8 new8
 
 data Hash = Hash { windowLength :: !Int
                  , currentVal   :: !Word64
@@ -44,20 +58,6 @@ roll hsh old new =
       skh = (currentVal hsh) `rotateL` 1
   in hsh { currentVal = rem `xor` add `xor` skh }
 {-# INLINE roll #-}
-
-hashes :: Int -> ByteString -> Vector Word64
-hashes len bs
-  | length bs < len = empty
-  | otherwise = constructN (length bs - len + 1) upd
-  where
-  upd :: Vector Word64 -> Word64
-  upd v
-    | null v    = currentVal $ init $ unsafeTake len bs
-    | otherwise =
-        let prevH = Hash len $ unsafeLast v
-            old8  = unsafeIndex bs (VU.length v - 1)
-            new8  = unsafeIndex bs (len + VU.length v - 1)
-        in currentVal $ roll prevH old8 new8
 
 h :: Word8 -> Word64
 h = (hs !) . fromEnum
