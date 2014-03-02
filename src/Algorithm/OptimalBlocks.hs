@@ -32,6 +32,9 @@ chop' winSz maxSz bs
     let hashed = hashes winSz bs
         locs   = V.map (+winSz) $ V.findIndices (\h -> mask == (mask .&. h))
                                                 hashed
+        -- Notice that this filter is totally wrong; I need to acumulate
+        -- differences that are too small, not delete them. Fix this once the
+        -- code no longer gives GHC fits...
         lens   = V.filter (>=winSz) $ V.zipWith (-) locs (V.cons 0 locs)
         (end, rlist) = V.foldl' split (bs, []) lens
     in Blocks (reverse rlist) end
