@@ -5,7 +5,7 @@ name:                optimal-blocks
 version:             0.0.1
 synopsis:            Optimal Block boundary determination for rsync-like behaviours
 -- description:         
-homepage:            github.com/tsuraan/optimal-blocks
+homepage:            https://github.com/tsuraan/optimal-blocks
 license:             BSD3
 license-file:        LICENSE
 author:              Jay Groven
