@@ -1,3 +1,9 @@
+{-# LANGUAGE CPP #-}
+#ifdef __GLASGOW_HASKELL__
+#if __GLASGOW_HASKELL__ < 708
+{-# OPTIONS_GHC -fno-spec-constr #-}
+#endif
+#endif
 module Algorithm.OptimalBlocks
 ( chop
 , Blocks(..)
