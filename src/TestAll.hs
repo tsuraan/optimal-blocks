@@ -2,8 +2,13 @@ module Main
 ( main
 ) where
 
-import Algorithm.OptimalBlocks.BuzzHash.Check ( check )
+import qualified Algorithm.OptimalBlocks.BuzzHash.Check as Buzz
+import Algorithm.OptimalBlocks.Check as Optimal
 
 main :: IO ()
-main = check
+main = do
+  putStrLn "Checking BuzzHash Algorithms"
+  Buzz.check
+  putStrLn "Checking Optimal Block Algorithms"
+  Optimal.check
 

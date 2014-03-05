@@ -2,17 +2,14 @@ module Algorithm.OptimalBlocks.BuzzHash.Speed
 ( speed
 ) where
 
-import qualified Data.ByteString as BS
-import System.IO ( withFile, IOMode(ReadMode) )
+import Data.ByteString ( ByteString )
 
-import Criterion.Main ( defaultMain, bgroup, bench, nf )
+import Criterion.Main ( bgroup, bench, nf, Benchmark )
 
 import Algorithm.OptimalBlocks.BuzzHash ( hashes, h )
 
-speed :: IO ()
-speed = do
-  bytes <- withFile "/dev/urandom" ReadMode $ (flip BS.hGet) (10 * 1024 * 1024)
-  defaultMain
+speed :: ByteString -> [Benchmark]
+speed bytes =
     [ bgroup "BuzzHash"
       [ bgroup "h" $
         [ bench (show n) (nf h n) | n <- 0:[7,15..255]]

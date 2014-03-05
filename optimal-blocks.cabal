@@ -25,6 +25,7 @@ library
   build-depends:       base >=4.6 && <4.7
                      , bytestring >=0.10 && <0.11
                      , vector
+                     , deepseq
   hs-source-dirs:      src
   default-language:    Haskell2010
   ghc-options: -O2 -fllvm -Wall
@@ -33,7 +34,7 @@ benchmark benchmark-all
   type: exitcode-stdio-1.0
   hs-source-dirs: src
   main-is: BenchAll.hs
-  build-depends: base, bytestring, criterion, vector
+  build-depends: base, bytestring, criterion, vector, QuickCheck, cryptohash, deepseq
   default-language:    Haskell2010
   ghc-options: -O2 -fllvm -Wall
 
@@ -41,7 +42,7 @@ Test-Suite test-all
   type: exitcode-stdio-1.0
   hs-source-dirs: src
   main-is: TestAll.hs
-  build-depends: base, bytestring, vector, QuickCheck
+  build-depends: base, bytestring, vector, QuickCheck, cryptohash, deepseq
   default-language:    Haskell2010
   ghc-options: -O2 -fllvm -Wall
 
