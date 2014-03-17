@@ -5,10 +5,10 @@ module Algorithm.OptimalBlocks.BuzzHash.Check
 import qualified Data.ByteString as BS
 
 import Data.Vector.Unboxed ( fromList )
+import Data.ByteString.Arbitrary ( ArbByteString(ABS) )
 import Test.QuickCheck ( quickCheck )
 import Test.QuickCheck.Gen ( choose )
 
-import Algorithm.OptimalBlocks.Check   ( ArbByteString(ABS) )
 import Algorithm.OptimalBlocks.BuzzHash ( Hash(currentVal), hashes, init )
 
 import Prelude hiding ( init )
