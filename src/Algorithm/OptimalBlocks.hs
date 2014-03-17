@@ -9,6 +9,7 @@ module Algorithm.OptimalBlocks
 , chop'
 , sizedBitmask
 , Blocks(..)
+, OptimalBlock(..)
 ) where
 
 import qualified Data.Vector.Unboxed as V
@@ -21,8 +22,9 @@ import Algorithm.OptimalBlocks.BuzzHash ( hashes )
 
 import Prelude hiding ( length, splitAt )
 
-data Blocks = Blocks [ByteString] ByteString
-           deriving ( Show )
+newtype OptimalBlock = OptimalBlock ByteString deriving ( Eq, Ord, Show )
+data Blocks = Blocks [OptimalBlock] ByteString
+              deriving ( Show )
 
 chop :: ByteString -> Blocks
 chop = chop' 128 (2 * mb)
@@ -43,7 +45,7 @@ chop' winSz maxSz bs
                                                 hashed
         lens   = V.zipWith (-) locs (V.cons 0 locs)
         (end, rlist, _) = V.foldl' split (bs, [], 0) lens
-    in Blocks (reverse rlist) end
+    in Blocks (map OptimalBlock $ reverse rlist) end
 
   mask :: Word64
   mask = sizedBitmask maxSz
