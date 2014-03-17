@@ -1,4 +1,4 @@
-module Algorithm.OptimalBlocks.BuzzHash.Check
+module Buzz
 ( check
 ) where
 

@@ -32,24 +32,26 @@ library
 
 benchmark benchmark-all
   type:                exitcode-stdio-1.0
-  hs-source-dirs:      src
+  hs-source-dirs:      benches
   main-is:             BenchAll.hs
   build-depends:       base
                      , bytestring
                      , criterion
                      , deepseq
+                     , optimal-blocks
                      , vector
   default-language:    Haskell2010
   ghc-options:         -O2 -fllvm -Wall
 
 Test-Suite test-all
   type:                exitcode-stdio-1.0
-  hs-source-dirs:      src
+  hs-source-dirs:      tests
   main-is:             TestAll.hs
   build-depends:       base
                      , bytestring
                      , bytestring-arbitrary
                      , deepseq
+                     , optimal-blocks
                      , QuickCheck
                      , vector
   default-language:    Haskell2010

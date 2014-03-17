@@ -1,4 +1,4 @@
-module Algorithm.OptimalBlocks.Check
+module OptimalBlocks
 ( check
 ) where
 

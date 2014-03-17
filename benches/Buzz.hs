@@ -1,4 +1,4 @@
-module Algorithm.OptimalBlocks.BuzzHash.Speed
+module Buzz
 ( speed
 ) where
 

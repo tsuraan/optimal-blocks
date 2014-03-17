@@ -1,4 +1,4 @@
-module Algorithm.OptimalBlocks.Speed
+module OptimalBlocks
 ( speed
 ) where
 
