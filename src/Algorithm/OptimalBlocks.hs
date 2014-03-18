@@ -22,9 +22,13 @@ import Algorithm.OptimalBlocks.BuzzHash ( hashes )
 
 import Prelude hiding ( length, splitAt )
 
-newtype OptimalBlock = OptimalBlock ByteString deriving ( Eq, Ord, Show )
-data Blocks = Blocks [OptimalBlock] ByteString
-              deriving ( Show )
+newtype OptimalBlock = OptimalBlock
+                       { fromOptimal :: ByteString
+                       } deriving ( Eq, Ord, Show )
+data Blocks = Blocks 
+              { blocksOptimal :: [OptimalBlock]
+              , blocksRemain  :: ByteString
+              } deriving ( Show )
 
 chop :: ByteString -> Blocks
 chop = chop' 128 (2 * mb)
