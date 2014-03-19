@@ -94,7 +94,7 @@ chop' winSz desiredSz bs
 -- doesn't have much impact on performance.
 sizedBitmask :: Int -> Word64
 sizedBitmask desiredSz =
-  let target = toEnum   $ desiredSz `div` 2 :: Float
+  let target = toEnum desiredSz :: Float
       bits   = fromEnum $ 0.5 + logBase 2 target
   in 1 `shiftL` bits - 1
 
