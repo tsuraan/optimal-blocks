@@ -26,7 +26,7 @@ data FileResult = FR
   }
 
 stdArgs :: Args
-stdArgs = Args 128 (1024*1024) Nothing
+stdArgs = Args 128 (256*1024) Nothing
 
 parseArgs :: [String] -> (Args, [String])
 parseArgs = go stdArgs []

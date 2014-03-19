@@ -39,9 +39,9 @@ data Blocks = Blocks
  desired block size of 2MB.
  -}
 chop :: ByteString -> Blocks
-chop = chop' 128 (2 * mb)
+chop = chop' 128 (256 * kb)
   where
-  mb = 1024*1024
+  kb = 1024
 
 {-| Chop up a 'ByteString' into blocks of data that are likely to occur in
  other 'ByteString's. This uses roughly the same algorithm that rsync does:
