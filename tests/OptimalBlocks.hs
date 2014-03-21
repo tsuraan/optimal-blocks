@@ -10,7 +10,7 @@ import Data.Bits ( (.&.) )
 import Data.ByteString.Arbitrary ( ArbByteString1M(..) )
 
 import qualified Algorithm.OptimalBlocks.BuzzHash as BH
-import Algorithm.OptimalBlocks ( Blocks(..), OptimalBlock(..), chop', sizedBitmask )
+import Algorithm.OptimalBlocks
 
 check :: IO ()
 check = do
@@ -21,7 +21,7 @@ check = do
   blocks :: ArbByteString1M -> Result
   blocks (ABS1M bs) =
     let mask  = sizedBitmask maxSz
-        Blocks optimalB final = chop' 128 maxSz bs
+        Blocks optimalB final = chop (defaultConfig{blockSize=maxSz}) bs
         optimalBS = [ b | OptimalBlock b <- optimalB ]
         lengths   = map BS.length optimalBS
         goodLen   = all (>= 128) lengths

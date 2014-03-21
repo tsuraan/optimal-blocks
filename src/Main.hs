@@ -11,11 +11,10 @@ import Crypto.Hash.MD5 ( hash )
 import Control.Monad ( forM_ )
 import Data.List ( sortBy, transpose )
 
-import Algorithm.OptimalBlocks ( Blocks(..), OptimalBlock(..), chop' )
+import Algorithm.OptimalBlocks
 
 data Args = Args
-  { argWinSz :: Int
-  , argChunkSz :: Int
+  { argConfig :: ChunkConfig
   , argOutHtml :: Maybe String
   } deriving ( Show )
 
@@ -26,7 +25,7 @@ data FileResult = FR
   }
 
 stdArgs :: Args
-stdArgs = Args 128 (256*1024) Nothing
+stdArgs = Args defaultConfig Nothing
 
 parseArgs :: [String] -> (Args, [String])
 parseArgs = go stdArgs []
@@ -35,9 +34,10 @@ parseArgs = go stdArgs []
   go args paths [] = (args, reverse paths)
   go args paths [path] = (args, reverse $ path:paths)
   go args paths ("-w":w:rest) =
-    go (args{argWinSz=read w}) paths rest
+    -- note to self: learn how to use lenses
+    go (args{argConfig=((argConfig args){windowSize=read w})}) paths rest
   go args paths ("-c":c:rest) =
-    go (args{argChunkSz=read c}) paths rest
+    go (args{argConfig=((argConfig args){blockSize=read c})}) paths rest
   go args paths ("-o":o:rest) =
     go (args{argOutHtml=Just o}) paths rest
   go args paths (path:rest) =
@@ -52,7 +52,7 @@ doFiles args lst =
 
 getResult :: Args -> String -> ByteString -> FileResult
 getResult args path bs =
-  let blocks = chop' (argWinSz args) (argChunkSz args) bs
+  let blocks = chop (argConfig args) bs
       remain = blocksRemain blocks
       blBs   = map fromOptimal $ blocksOptimal blocks
   in FR path
@@ -70,7 +70,7 @@ prtText args (res:rest) = do
   putStrLn $ "Generated " ++ show (length $ frBlocks res) ++ " optimal blocks"
   let avg    = fromRational ( ( toRational $ sum [len | (_, len) <- frBlocks res])
                             / ( toRational $ length $ frBlocks res) ) :: Float
-  putStrLn $ "Avg block size is " ++ show avg ++ " (desired was " ++ show (argChunkSz args) ++ ")"
+  putStrLn $ "Avg block size is " ++ show avg ++ " (desired was " ++ show (blockSize $ argConfig args) ++ ")"
   forM_ (frBlocks res) $ \(h, l) -> putStrLn ("  " ++ h ++ " " ++ show l)
   prtText args rest
 
@@ -96,7 +96,7 @@ prtHtml output args results = withFile output WriteMode go
           else fromRational ( ( toRational $ sum [len | (_, len) <- frBlocks res])
                             / ( toRational $ length $ frBlocks res) ) :: Float
       in s $ "  <td>Avg Len:" ++ show avg ++ "</td>"
-    s $ "<td>Expected Avg: " ++ show (argChunkSz args) ++ "</td>"
+    s $ "<td>Expected Avg: " ++ show (blockSize $ argConfig args) ++ "</td>"
     s " </tr>"
     loop numCell $ transpose [frBlocks o | o <- ordered]
     s " <tr>"

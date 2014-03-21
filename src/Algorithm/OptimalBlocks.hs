@@ -5,11 +5,12 @@
 #endif
 #endif
 module Algorithm.OptimalBlocks
-( chop
-, chop'
-, sizedBitmask
-, Blocks(..)
+( Blocks(..)
+, ChunkConfig(..)
 , OptimalBlock(..)
+, chop
+, defaultConfig
+, sizedBitmask
 ) where
 
 import qualified Data.Vector.Unboxed as V
@@ -28,35 +29,44 @@ newtype OptimalBlock = OptimalBlock
                        { fromOptimal :: ByteString
                        } deriving ( Eq, Ord, Show )
 
--- | The result of the 'chop'' function, contains the list of optimal blocks
+-- | The result of the 'chop' function, contains the list of optimal blocks
 -- that were found, and any remaining bytes that did not end optimally.
 data Blocks = Blocks 
               { blocksOptimal :: [OptimalBlock]
               , blocksRemain  :: ByteString
               } deriving ( Show )
 
+-- | Parameters to the chop function. 'windowSize' is how many bytes wide the
+-- hashing window is. 'blockSize' is the target size of each generated block.
+-- Actual blocks will be larger or smaller, but on average, blocks will be
+-- about 'blockSize' on reasonably high-entropy data.
+data ChunkConfig = ChunkConfig
+                   { windowSize :: Int
+                   , blockSize  :: Int
+                   } deriving ( Show )
+
 {-| This is an alias of 'chop'' that uses a window size of 128 bytes and a
- desired block size of 2MB.
+ desired block size of 256KiB.
  -}
-chop :: ByteString -> Blocks
-chop = chop' 128 (256 * kb)
+defaultConfig :: ChunkConfig
+defaultConfig = ChunkConfig 128 $ 256*kb
   where
   kb = 1024
 
 {-| Chop up a 'ByteString' into blocks of data that are likely to occur in
  other 'ByteString's. This uses roughly the same algorithm that rsync does:
- calculate a hash of every 'winSz'-sized sequence of bytes within the given
- 'ByteString', and then break it up where the hashes match a certain pattern.
- Specifically, this function uses BuzzHash (a rolling hash) to make the hash
- calculations fast, and the pattern it looks for is that the hash's binary form
- ends with the right number of "ones", where "right" is determined by the given
- 'desiredSz'. The breaks are inserted after the matching windows are found.
+ calculate a hash of every 'windowSize'-sized sequence of bytes within the
+ given 'ByteString', and then break it up where the hashes match a certain
+ pattern.  Specifically, this function uses BuzzHash (a rolling hash) to make
+ the hash calculations fast, and the pattern it looks for is that the hash's
+ binary form ends with the right number of "ones", where "right" is determined
+ by the given 'blockSize'. The breaks are inserted after the matching windows
+ are found.
  -}
-chop' :: Int        -- ^ Window size for rolling hash
-      -> Int        -- ^ Desired average block size
-      -> ByteString -- ^ ByteString to chop
-      -> Blocks
-chop' winSz desiredSz bs
+chop :: ChunkConfig -- ^ chopping parameters
+     -> ByteString  -- ^ ByteString to chop
+     -> Blocks
+chop cfg bs
   | length bs < winSz = Blocks [] bs
   | otherwise = go
   where
@@ -84,6 +94,9 @@ chop' winSz desiredSz bs
     | otherwise =
         let (h, t) = splitAt (add+loc) b
         in (t, h:ls, 0)
+
+  winSz     = windowSize cfg
+  desiredSz = blockSize cfg
 
 -- | Determine the bitmask that will probably give us blocks of size
 -- 'desiredSz'. The idea behind this is that if, for example, we want 1MB
