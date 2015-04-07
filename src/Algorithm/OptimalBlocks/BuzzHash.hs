@@ -29,11 +29,13 @@ import Prelude hiding ( init, length, null, rem )
 type WindowSize = Int
 type BlockShift = Int
 
-{- Split up a ByteString into a complete block and a remainder. If no break
- - point is found in the given string, the first element of the resulting pair
- - will be empty.
- -}
-split :: WindowSize -> BlockShift -> ByteString -> (ByteString, ByteString)
+-- | Split up a ByteString into a complete block and a remainder. If no break
+-- point is found in the given string, the first element of the resulting pair
+-- will be empty.
+split :: WindowSize -- ^ How many bytes to use when generating the pattern hash
+      -> BlockShift -- ^ log2 of the desired block size
+      -> ByteString -- ^ The ByteString to split
+      -> (ByteString, ByteString)
 split win _shift bytes | ByteString.length bytes <= win =
   (ByteString.empty, bytes)
 split win shift bytes = go 0 (hash0 $ unsafeTake win bytes)
@@ -62,11 +64,13 @@ split win shift bytes = go 0 (hash0 $ unsafeTake win bytes)
 
   mask = (1 `shiftL` shift) - 1
 
-{- Same thing as 'split', but actually calculates the hash of every window
- - explicitly. This is really slow, and is only used to validate the results of
- - 'split'
- -}
-slowSplit :: WindowSize -> BlockShift -> ByteString -> (ByteString, ByteString)
+-- | Same thing as 'split', but actually calculates the hash of every window
+-- explicitly. This is really slow, and is only used to validate the results of
+-- 'split'
+slowSplit :: WindowSize -- ^ How many bytes to use for pattern search
+          -> BlockShift -- ^ log2 of the desired block size
+          -> ByteString -- ^ The ByteString to split
+          -> (ByteString, ByteString)
 slowSplit win _shift bytes | ByteString.length bytes <= win =
   (ByteString.empty, bytes)
 slowSplit win shift bytes = go 0

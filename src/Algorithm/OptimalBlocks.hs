@@ -10,6 +10,7 @@ module Algorithm.OptimalBlocks
 , OptimalBlock(..)
 , Algorithm(..)
 , chop
+, split
 , defaultConfig
 , sizedBitmask
 ) where
