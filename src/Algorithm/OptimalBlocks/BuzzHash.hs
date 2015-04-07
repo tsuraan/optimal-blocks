@@ -41,10 +41,12 @@ hashes len bs
   upd v
     | null v    = currentVal $ init $ unsafeTake len bs
     | otherwise =
-        let prevH = Hash len $ unsafeLast v
-            old8  = unsafeIndex bs (VU.length v - 1)
-            new8  = unsafeIndex bs (len + VU.length v - 1)
-        in currentVal $ roll prevH old8 new8
+        let !prevH = {-# SCC hash_last #-} Hash len $ unsafeLast v
+            !vlen  = VU.length v - 1
+            !old8  = unsafeIndex bs vlen
+            !new8  = unsafeIndex bs (len + vlen)
+            !rollV = roll prevH old8 new8
+        in {-# SCC current_roll #-} currentVal rollV
 
 {-| A representation of a hash that allows rolling hashes to be easily
  calculated.
@@ -75,11 +77,11 @@ init bs =
  window on the 'ByteString'. 'hashes' does this for you...
  -}
 roll :: Hash -> Word8 -> Word8 -> Hash
-roll hsh old new =
-  let rem = (h old) `rotateL` (windowLength hsh)
-      add = h new
-      skh = (currentVal hsh) `rotateL` 1
-  in hsh { currentVal = rem `xor` add `xor` skh }
+roll !hsh !old !new =
+  let !rem = {- {-# SCC roll_rem #-} -} (h old) `rotateL` (windowLength hsh)
+      !add = {- {-# SCC roll_add #-} -} h new
+      !skh = {- {-# SCC roll_skh #-} -} (currentVal hsh) `rotateL` 1
+  in {-# SCC roll_hsh #-} hsh { currentVal = rem `xor` add `xor` skh }
 {-# INLINE roll #-}
 
 {-| Upgrade an 8-bit word to a 64-bit one that is very "different" from all
@@ -87,6 +89,13 @@ roll hsh old new =
  -}
 h :: Word8 -> Word64
 h = (hs !) . fromEnum
+{-
+h w = let a = {-# SCC h_a #-} hs
+          b = {-# SCC h_fromEnum #-} fromEnum w
+          c = {-# SCC h_lookup #-} a ! b
+      in c
+      -}
+{-# NOINLINE h #-}
 
 hs :: Vector Word64
 hs = generate 256 fn
@@ -94,4 +103,4 @@ hs = generate 256 fn
   fn n = hashByteString 2 4 k0 k1 $ pack [toEnum n]
   k0 = 0x4a7330fae70f52e8
   k1 = 0x919ea5953a9a1ec9
-
+{-# NOINLINE hs #-}

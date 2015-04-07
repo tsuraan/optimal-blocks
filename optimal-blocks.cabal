@@ -26,12 +26,13 @@ executable chunk
                      , vector
   hs-source-dirs:      src
   default-language:    Haskell2010
-  ghc-options:         -O2 -fllvm -Wall
+  ghc-options:         -O2 -fllvm -Wall -fprof-auto
 
 library
   exposed-modules:     Algorithm.OptimalBlocks
                      , Algorithm.OptimalBlocks.SipHash
                      , Algorithm.OptimalBlocks.BuzzHash
+                     , Algorithm.OptimalBlocks.Buzz2
   -- other-modules:       
   other-extensions:    BangPatterns, CPP, GeneralizedNewtypeDeriving, RecordWildCards
   build-depends:       base >=4.6 && <4.8
@@ -40,7 +41,7 @@ library
                      , vector
   hs-source-dirs:      src
   default-language:    Haskell2010
-  ghc-options:         -O2 -fllvm -Wall
+  ghc-options:         -O2 -fllvm -Wall -fprof-auto
 
 benchmark benchmark-all
   type:                exitcode-stdio-1.0
@@ -53,7 +54,7 @@ benchmark benchmark-all
                      , optimal-blocks
                      , vector
   default-language:    Haskell2010
-  ghc-options:         -O2 -fllvm -Wall
+  ghc-options:         -O2 -fllvm -Wall -fprof-auto
 
 Test-Suite test-all
   type:                exitcode-stdio-1.0
@@ -67,5 +68,5 @@ Test-Suite test-all
                      , QuickCheck
                      , vector
   default-language:    Haskell2010
-  ghc-options:         -O2 -fllvm -Wall
+  ghc-options:         -O2 -fllvm -Wall -fprof-auto
 
