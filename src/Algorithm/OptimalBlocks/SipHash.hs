@@ -1,11 +1,10 @@
 {-# LANGUAGE BangPatterns, CPP, GeneralizedNewtypeDeriving, RecordWildCards #-}
 {-# OPTIONS_GHC -fno-warn-name-shadowing #-}
-{-- This is Bryan O'Sullivan's SipHash implementation that he wrote for
- - Data.Hashable. I'm directly copying it instead of using hashable because
- - their actual hash implementation could change, and that would cause block
- - boundaries discovered by this module to change, which would defeat the
- - entire purpose of this module.
- -}
+-- | This is Bryan O'Sullivan's SipHash implementation that he wrote for
+-- Data.Hashable. I'm directly copying it instead of using hashable because
+-- their actual hash implementation could change, and that would cause block
+-- boundaries discovered by this module to change, which would defeat the
+-- entire purpose of this module.
 
 module Algorithm.OptimalBlocks.SipHash
     (
