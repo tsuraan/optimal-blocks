@@ -21,8 +21,7 @@ import Data.Word ( Word64 )
 import Data.Bits ( (.&.), shiftL )
 import Control.DeepSeq ( NFData(..) )
 
-import Algorithm.OptimalBlocks.BuzzHash ( hashes )
-import Algorithm.OptimalBlocks.Buzz2 ( split, slowSplit )
+import Algorithm.OptimalBlocks.BuzzHash ( hashes, split, slowSplit )
 
 import Prelude hiding ( length, splitAt )
 

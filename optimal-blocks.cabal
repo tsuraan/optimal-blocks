@@ -2,7 +2,7 @@
 -- documentation, see http://haskell.org/cabal/users-guide/
 
 name:                optimal-blocks
-version:             0.0.1
+version:             0.1.0
 synopsis:            Optimal Block boundary determination for rsync-like behaviours
 -- description:         
 homepage:            https://github.com/tsuraan/optimal-blocks
@@ -32,7 +32,6 @@ library
   exposed-modules:     Algorithm.OptimalBlocks
                      , Algorithm.OptimalBlocks.SipHash
                      , Algorithm.OptimalBlocks.BuzzHash
-                     , Algorithm.OptimalBlocks.Buzz2
   -- other-modules:       
   other-extensions:    BangPatterns, CPP, GeneralizedNewtypeDeriving, RecordWildCards
   build-depends:       base >=4.6 && <4.8
