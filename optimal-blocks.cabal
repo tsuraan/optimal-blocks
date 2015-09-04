@@ -18,7 +18,7 @@ cabal-version:       >=1.10
 
 executable chunk
   main-is:             Main.hs
-  build-depends:       base >=4.6 && <4.8
+  build-depends:       base >=4.6 && <4.9
                      , bytestring >=0.10 && <0.12
                      , cryptohash
                      , deepseq
@@ -34,7 +34,7 @@ library
                      , Algorithm.OptimalBlocks.BuzzHash
   -- other-modules:       
   other-extensions:    BangPatterns, CPP, GeneralizedNewtypeDeriving, RecordWildCards
-  build-depends:       base >=4.6 && <4.8
+  build-depends:       base >=4.6 && <4.9
                      , bytestring >=0.10 && <0.12
                      , deepseq
                      , vector
